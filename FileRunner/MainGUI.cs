@@ -19,7 +19,6 @@ namespace FileRunner
 			cboOperation.Items.Add(new Operation("Show file name", ShowDirectoryName, ShowFileName));
 			cboOperation.Items.Add(new Operation("Set mp3 track number", ShowDirectoryName, SetMp3Track));
 			cboOperation.Items.Add(new Operation("Delete Flexsim backup files (.*!)", ShowDirectoryName, DeleteFlexsimBackupFile));
-			cboOperation.Items.Add(new Operation("Delete SVN directories (.svn)", DeleteSVNDirectory, ShowFileName));
 			cboOperation.Items.Add(new Operation("Delete CVS backup files (.# files)", ShowDirectoryName, DeleteCVSBackUpFile));
 			cboOperation.Items.Add(new Operation("Delete CVS folders", DeleteCVSDirectory, ShowFileName));
 			cboOperation.Items.Add(new Operation("Delete all CVS remnants (files & folders)", DeleteCVSDirectory, DeleteCVSBackUpFile));
@@ -218,26 +217,6 @@ namespace FileRunner
 			{
 				txtResults.Text += " -> Directory DELETED #####";
 				curdir.Delete(true); // Deletes sub-directories and files
-			}
-		}
-
-		private void DeleteSVNDirectory(DirectoryInfo curdir)
-		{
-			ShowDirectoryName(curdir);
-
-			string dirname = curdir.Name;
-			try
-			{
-				if (dirname == ".svn")
-				{
-					txtResults.Text += " -> Directory DELETED #####";
-					curdir.Delete(true); // Deletes sub-directories and files
-				}
-			}
-			catch (Exception ex)
-			{
-				txtResults.Text += "    ************* EXCEPTION *************\r\n    ";
-				txtResults.Text += ex.Message;
 			}
 		}
 	}
