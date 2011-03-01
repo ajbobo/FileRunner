@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{054284BB-51B0-4DC1-900A-D633776904FB}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -62,9 +62,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="UltraID3Lib, Version=0.9.5.10, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UltraID3Lib, Version=0.9.6.8, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\UltraID3Lib\UltraID3Lib.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\UltraID3Lib\UltraID3Lib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
