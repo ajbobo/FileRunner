@@ -22,6 +22,7 @@ namespace FileRunner
 			cboOperation.Items.Add(new Operation("Delete CVS backup files (.# files)", ShowDirectoryName, DeleteCVSBackUpFile));
 			cboOperation.Items.Add(new Operation("Delete CVS folders", DeleteCVSDirectory, ShowFileName));
 			cboOperation.Items.Add(new Operation("Delete all CVS remnants (files & folders)", DeleteCVSDirectory, DeleteCVSBackUpFile));
+			cboOperation.Items.Add(new Operation("Rename mp4 to m4v", ShowDirectoryName, RenameMP4));
 
 			// Pick a default operation
 			cboOperation.SelectedIndex = 0;
@@ -217,6 +218,18 @@ namespace FileRunner
 			{
 				txtResults.Text += " -> Directory DELETED #####";
 				curdir.Delete(true); // Deletes sub-directories and files
+			}
+		}
+
+		private void RenameMP4(FileInfo curfile, int index)
+		{
+			ShowFileName(curfile, index);
+
+			if (curfile.Extension.Equals(".mp4", StringComparison.OrdinalIgnoreCase))
+			{
+				curfile.MoveTo(curfile.FullName.Replace("mp4", "m4v")); // Needs to strip the old extension and keep the old directory
+
+				txtResults.Text += " -> renamed to " + curfile.FullName;
 			}
 		}
 	}
