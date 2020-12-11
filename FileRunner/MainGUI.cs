@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 using folderSelect;
-using HundredMilesSoftware.UltraID3Lib;
+//using HundredMilesSoftware.UltraID3Lib;
 
 namespace FileRunner
 {
@@ -17,15 +17,15 @@ namespace FileRunner
 
 			// Put the possible operations in the combo box
 			cboOperation.Items.Add(new Operation("Show file name", ShowDirectoryName, ShowFileName));
-			cboOperation.Items.Add(new Operation("Set mp3 track number", ShowDirectoryName, SetMp3Track));
+			//cboOperation.Items.Add(new Operation("Set mp3 track number", ShowDirectoryName, SetMp3Track));
 			cboOperation.Items.Add(new Operation("Delete Flexsim backup files (.*!)", ShowDirectoryName, DeleteFlexsimBackupFile));
 			cboOperation.Items.Add(new Operation("Delete CVS backup files (.# files)", ShowDirectoryName, DeleteCVSBackUpFile));
 			cboOperation.Items.Add(new Operation("Delete CVS folders", DeleteCVSDirectory, ShowFileName));
 			cboOperation.Items.Add(new Operation("Delete all CVS remnants (files & folders)", DeleteCVSDirectory, DeleteCVSBackUpFile));
-			cboOperation.Items.Add(new Operation("Rename mp4 to m4v", ShowDirectoryName, RenameMP4));
-
-			// Pick a default operation
-			cboOperation.SelectedIndex = 0;
+            cboOperation.Items.Add(new Operation("Rename mp4 to m4v", ShowDirectoryName, RenameMP4));
+			cboOperation.Items.Add(new Operation("Delete bin and obj directories", DeleteBinObjDirectories, ShowFileName));
+            // Pick a default operation
+            cboOperation.SelectedIndex = 0;
 		}
 
 		private void txtPath_DragDrop(object sender, DragEventArgs e)
@@ -163,27 +163,27 @@ namespace FileRunner
 				txtResults.Text += " - Hidden";
 		}
 
-		private void SetMp3Track(FileInfo curfile, int index)
-		{
-			ShowFileName(curfile, index);
+		//private void SetMp3Track(FileInfo curfile, int index)
+		//{
+		//	ShowFileName(curfile, index);
 
-			// Set the new track number for the file
-			UltraID3 ultraid3 = new UltraID3();
-			int trackcnt = index + 1;
-			try
-			{
-				ultraid3.Read(curfile.FullName);
-				int oldnum = (int)ultraid3.TrackNum; // Get the old track number
-				txtResults.Text += "\tOldTrack: " + oldnum + "  NewTrack: " + trackcnt;
-				ultraid3.TrackNum = (short)trackcnt; // Set the new track number
-				ultraid3.Write(); // Write the changes to the file
-			}
-			catch (Exception ex)
-			{
-				txtResults.Text += "    ************* EXCEPTION *************\r\n    ";
-				txtResults.Text += ex.Message;
-			}
-		}
+		//	// Set the new track number for the file
+		//	UltraID3 ultraid3 = new UltraID3();
+		//	int trackcnt = index + 1;
+		//	try
+		//	{
+		//		ultraid3.Read(curfile.FullName);
+		//		int oldnum = (int)ultraid3.TrackNum; // Get the old track number
+		//		txtResults.Text += "\tOldTrack: " + oldnum + "  NewTrack: " + trackcnt;
+		//		ultraid3.TrackNum = (short)trackcnt; // Set the new track number
+		//		ultraid3.Write(); // Write the changes to the file
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		txtResults.Text += "    ************* EXCEPTION *************\r\n    ";
+		//		txtResults.Text += ex.Message;
+		//	}
+		//}
 
 		private void DeleteFlexsimBackupFile(FileInfo curfile, int index)
 		{
@@ -232,6 +232,18 @@ namespace FileRunner
 				txtResults.Text += " -> renamed to " + curfile.FullName;
 			}
 		}
+
+		private void DeleteBinObjDirectories(DirectoryInfo curdir)
+        {
+			ShowDirectoryName(curdir);
+
+			string dirname = curdir.Name;
+			if (dirname == "bin" || dirname == "obj")
+            {
+				txtResults.Text += " -> Directory DELETED #####";
+				curdir.Delete(true); // Delete sub-directories and files
+            }
+        }
 	}
 
 	/*********************************************************************
