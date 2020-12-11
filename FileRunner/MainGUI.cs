@@ -17,13 +17,14 @@ namespace FileRunner
 
 			// Put the possible operations in the combo box
 			cboOperation.Items.Add(new Operation("Show file name", ShowDirectoryName, ShowFileName));
+			cboOperation.Items.Add(new Operation("Show Directory name only", ShowDirectoryName, null));
 			//cboOperation.Items.Add(new Operation("Set mp3 track number", ShowDirectoryName, SetMp3Track));
 			cboOperation.Items.Add(new Operation("Delete Flexsim backup files (.*!)", ShowDirectoryName, DeleteFlexsimBackupFile));
 			cboOperation.Items.Add(new Operation("Delete CVS backup files (.# files)", ShowDirectoryName, DeleteCVSBackUpFile));
 			cboOperation.Items.Add(new Operation("Delete CVS folders", DeleteCVSDirectory, ShowFileName));
 			cboOperation.Items.Add(new Operation("Delete all CVS remnants (files & folders)", DeleteCVSDirectory, DeleteCVSBackUpFile));
             cboOperation.Items.Add(new Operation("Rename mp4 to m4v", ShowDirectoryName, RenameMP4));
-			cboOperation.Items.Add(new Operation("Delete bin and obj directories", DeleteBinObjDirectories, ShowFileName));
+			cboOperation.Items.Add(new Operation("Delete bin and obj directories", DeleteBinObjDirectories, null));
             // Pick a default operation
             cboOperation.SelectedIndex = 0;
 		}
@@ -85,33 +86,52 @@ namespace FileRunner
 				MessageBox.Show(directory, "Directory doesn't exist");
 				return;
 			}
-			op.OperatateOnDirectory(topdir);
+			try
+			{
+				op.OperatateOnDirectory(topdir);
+			}
+			catch (Exception ex)
+            {
+				txtResults.Text += "\r\nEXCEPTION: " + ex.Message;
+				Console.WriteLine(ex.Message);
+			}
 			txtResults.Text += "\r\n";
-			ScrollToEnd();
+			UpdateOutput();
 
 			// Look through the files - perform the selected operation on them
 			try
 			{
-				FileInfo[] files = topdir.GetFiles();
-				int index = 0;
-				foreach (FileInfo curfile in files)
+				if (op.hasFileOperation())
 				{
-					bool issystem = HasAttribute(curfile.Attributes, FileAttributes.System);
-					bool ishidden = HasAttribute(curfile.Attributes, FileAttributes.Hidden);
-					bool showit = false;
-					if (!issystem && !ishidden) // Show normal files
-						showit = true;
-					else if (issystem && btnShowSystem.Checked) // If system files are supposed to be visible, show them
-						showit = true;
-					else if (ishidden && !issystem && btnShowHidden.Checked) // The "Show Hidden" checkbox won't show system files
-						showit = true;
-
-					if (showit)
+					FileInfo[] files = topdir.GetFiles();
+					int index = 0;
+					foreach (FileInfo curfile in files)
 					{
-						op.OperatateOnFile(curfile, index);
-						txtResults.Text += "\r\n";
-						ScrollToEnd();
-						index++;
+						bool issystem = HasAttribute(curfile.Attributes, FileAttributes.System);
+						bool ishidden = HasAttribute(curfile.Attributes, FileAttributes.Hidden);
+						bool showit = false;
+						if (!issystem && !ishidden) // Show normal files
+							showit = true;
+						else if (issystem && btnShowSystem.Checked) // If system files are supposed to be visible, show them
+							showit = true;
+						else if (ishidden && !issystem && btnShowHidden.Checked) // The "Show Hidden" checkbox won't show system files
+							showit = true;
+
+						if (showit)
+						{
+							try
+							{
+								op.OperatateOnFile(curfile, index);
+							}
+							catch (Exception ex)
+							{
+								txtResults.Text += "\r\nEXCEPTION: " + ex.Message;
+								Console.WriteLine(ex.Message);
+							}
+							txtResults.Text += "\r\n";
+							UpdateOutput();
+							index++;
+						}
 					}
 				}
 
@@ -121,7 +141,10 @@ namespace FileRunner
 					DirectoryInfo[] dirs = topdir.GetDirectories();
 					foreach (DirectoryInfo curdir in dirs)
 					{
-						DoDirectory(curdir.FullName);
+						bool isVCS = (curdir.Name == ".vs" || curdir.Name == ".git");
+
+						if (!isVCS || !btnIgnoreVCS.Checked)
+							DoDirectory(curdir.FullName);
 					}
 				}
 			}
@@ -132,10 +155,16 @@ namespace FileRunner
 			}
 		}
 
-		private void ScrollToEnd()
+		private void UpdateOutput()
 		{
-			txtResults.SelectionStart = txtResults.Text.Length;
-			txtResults.ScrollToCaret();
+			if (btnAutoScroll.Checked)
+			{
+				txtResults.SelectionStart = txtResults.Text.Length;
+				txtResults.ScrollToCaret();
+			}
+
+			if (txtResults.Text.Length > 10000)
+				txtResults.Clear();
 		}
 
 		bool HasAttribute(FileAttributes value, FileAttributes check)
@@ -278,5 +307,15 @@ namespace FileRunner
 			if (dirfunc != null)
 				dirfunc(curdir);
 		}
+
+		public bool hasFileOperation()
+        {
+			return filefunc != null;
+        }
+
+		public bool hasDirOperation()
+        {
+			return dirfunc != null;
+        }
 	}
 }

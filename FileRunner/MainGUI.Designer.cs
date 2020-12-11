@@ -40,6 +40,8 @@
             this.btnRecurse = new System.Windows.Forms.CheckBox();
             this.btnShowSystem = new System.Windows.Forms.CheckBox();
             this.btnShowHidden = new System.Windows.Forms.CheckBox();
+            this.btnAutoScroll = new System.Windows.Forms.CheckBox();
+            this.btnIgnoreVCS = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // txtResults
@@ -133,6 +135,8 @@
             // btnRecurse
             // 
             this.btnRecurse.AutoSize = true;
+            this.btnRecurse.Checked = true;
+            this.btnRecurse.CheckState = System.Windows.Forms.CheckState.Checked;
             this.btnRecurse.Location = new System.Drawing.Point(12, 38);
             this.btnRecurse.Name = "btnRecurse";
             this.btnRecurse.Size = new System.Drawing.Size(122, 17);
@@ -162,11 +166,37 @@
             this.btnShowHidden.Text = "Show hidden files";
             this.btnShowHidden.UseVisualStyleBackColor = true;
             // 
+            // btnAutoScroll
+            // 
+            this.btnAutoScroll.AutoSize = true;
+            this.btnAutoScroll.Checked = true;
+            this.btnAutoScroll.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.btnAutoScroll.Location = new System.Drawing.Point(342, 38);
+            this.btnAutoScroll.Name = "btnAutoScroll";
+            this.btnAutoScroll.Size = new System.Drawing.Size(74, 17);
+            this.btnAutoScroll.TabIndex = 16;
+            this.btnAutoScroll.Text = "AutoScroll";
+            this.btnAutoScroll.UseVisualStyleBackColor = true;
+            // 
+            // btnIgnoreVCS
+            // 
+            this.btnIgnoreVCS.AutoSize = true;
+            this.btnIgnoreVCS.Checked = true;
+            this.btnIgnoreVCS.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.btnIgnoreVCS.Location = new System.Drawing.Point(141, 39);
+            this.btnIgnoreVCS.Name = "btnIgnoreVCS";
+            this.btnIgnoreVCS.Size = new System.Drawing.Size(131, 17);
+            this.btnIgnoreVCS.TabIndex = 17;
+            this.btnIgnoreVCS.Text = "Ignore VCS directories";
+            this.btnIgnoreVCS.UseVisualStyleBackColor = true;
+            // 
             // MainGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(658, 427);
+            this.Controls.Add(this.btnIgnoreVCS);
+            this.Controls.Add(this.btnAutoScroll);
             this.Controls.Add(this.btnShowHidden);
             this.Controls.Add(this.btnShowSystem);
             this.Controls.Add(this.btnRecurse);
@@ -200,6 +230,8 @@
 		private System.Windows.Forms.CheckBox btnRecurse;
 		private System.Windows.Forms.CheckBox btnShowSystem;
 		private System.Windows.Forms.CheckBox btnShowHidden;
-	}
+        private System.Windows.Forms.CheckBox btnAutoScroll;
+        private System.Windows.Forms.CheckBox btnIgnoreVCS;
+    }
 }
 
