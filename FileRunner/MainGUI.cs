@@ -25,11 +25,12 @@ namespace FileRunner
 			cboOperation.Items.Add(new Operation("Delete all CVS remnants (files & folders)", DeleteCVSDirectory, DeleteCVSBackUpFile));
             cboOperation.Items.Add(new Operation("Rename mp4 to m4v", ShowDirectoryName, RenameMP4));
 			cboOperation.Items.Add(new Operation("Delete bin and obj directories", DeleteBinObjDirectories, null));
-            // Pick a default operation
-            cboOperation.SelectedIndex = 0;
+			cboOperation.Items.Add(new Operation("Delete files less than 1 day old", ShowDirectoryName, DeleteRecentFile));
+			// Pick a default operation
+			cboOperation.SelectedIndex = 0;
 		}
 
-		private void txtPath_DragDrop(object sender, DragEventArgs e)
+        private void txtPath_DragDrop(object sender, DragEventArgs e)
 		{
 			// Copies the name of the file that's being dragged into the control
 			string[] strdata = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -272,7 +273,20 @@ namespace FileRunner
 				txtResults.Text += " -> Directory DELETED #####";
 				curdir.Delete(true); // Delete sub-directories and files
             }
-        }
+		}
+
+		private void DeleteRecentFile(FileInfo curfile, int index)
+		{
+			ShowFileName(curfile, index);
+
+			DateTime creationTime = curfile.CreationTime;
+
+			if (DateTime.Now.Subtract(creationTime) < TimeSpan.FromHours(24) )
+            {
+				txtResults.Text += " -> Recent file deleted";
+				curfile.Delete();
+            }
+		}
 	}
 
 	/*********************************************************************
